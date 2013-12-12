@@ -27,6 +27,11 @@
             <artifactId>jersey-server</artifactId>
             <version>1.11</version>
         </dependency>
+        <dependency>
+            <groupId>HelloAPI</groupId>
+            <artifactId>RESTModels</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 </project>
