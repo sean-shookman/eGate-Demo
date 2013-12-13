@@ -12,6 +12,7 @@
         <module>MessageService</module>
         <module>RESTModels</module>
         <module>RESTWeb</module>
+        <module>ProductService</module>
     </modules>
 
 
