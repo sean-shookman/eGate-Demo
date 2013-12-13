@@ -10,9 +10,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "response")
 public class RESTResponse {
 
-    @XmlElement(name = "statusCode")
     private String statusCode;
 
+    @XmlElement(name = "statusCode")
     public String getStatusCode() {
         return statusCode;
     }
