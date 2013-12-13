@@ -1,9 +1,7 @@
 package com.demo.api.service;
 
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.MongoClient;
+import com.demo.api.products.Product;
+import com.mongodb.*;
 import com.sun.jersey.spi.resource.Singleton;
 
 import javax.inject.Named;
@@ -43,10 +41,16 @@ public class ProductService {
 
         DBCursor cursor = products.find();
 
+        Product product = null;
+
         while (cursor.hasNext()) {
-            System.out.println(cursor.next());
+            DBObject current = cursor.next();
+            product = new Product();
+            product.setBrand(current.get("brand").toString());
+            product.setTitle(current.get("Title").toString());
+            product.setPrice(new Double(current.get("Price").toString()));
         }
 
-        return Response.ok().build();
+        return Response.ok(product).build();
     }
 }
