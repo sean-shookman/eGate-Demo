@@ -13,9 +13,9 @@ import javax.ws.rs.core.Response;
 /**
  * @author Sean Shookman
  */
-@Singleton
-@Path("message")
 @Named
+@Singleton
+@Path("/message")
 public class MessageService {
 
     private static final String MESSAGE = "Hello World. I am a RESTFUL API Get Request!";
