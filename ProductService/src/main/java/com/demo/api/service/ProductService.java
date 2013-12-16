@@ -133,7 +133,7 @@ public class ProductService {
         final ProductResponse productResponse = new ProductResponse();
         productResponse.setProduct(request);
 
-        return Response.ok(request).build();
+        return Response.ok(productResponse).build();
     }
 
     @PUT
@@ -178,7 +178,7 @@ public class ProductService {
         final ProductResponse productResponse = new ProductResponse();
         productResponse.setProduct(request);
 
-        return Response.ok(request).build();
+        return Response.ok(productResponse).build();
     }
 
     @DELETE
