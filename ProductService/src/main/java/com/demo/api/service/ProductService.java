@@ -62,6 +62,33 @@ public class ProductService {
         return Response.ok(productResponse).build();
     }
 
+    @DELETE
+    @Path("/{id}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response deleteProductByID(@PathParam("id") final String id) {
+
+        DB db;
+
+        try {
+            db = establishConnection();
+        } catch (UnknownHostException e) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        final DBCollection productCollection = db.getCollection("products");
+
+        BasicDBObject searchQuery = new BasicDBObject();
+        searchQuery.put("_id", new ObjectId(id));
+
+        WriteResult result = productCollection.remove(searchQuery);
+
+        if (result.getError() != null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(result.getError()).build();
+        }
+
+        return Response.ok(id).build();
+    }
+
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response getAllProducts() {
