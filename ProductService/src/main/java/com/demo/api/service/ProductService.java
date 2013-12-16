@@ -11,7 +11,9 @@ import org.bson.types.ObjectId;
 
 import javax.inject.Named;
 import javax.ws.rs.*;
-import javax.ws.rs.core.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -124,7 +126,7 @@ public class ProductService {
     @POST
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response createProduct(@Context final HttpContext requestContext, @Context final UriInfo uriInfo) {
+    public Response createProduct(@Context final HttpContext requestContext) {
 
         final String contentType = requestContext.getRequest().getHeaderValue(HttpHeaders.CONTENT_TYPE);
         final String originalRequest = requestContext.getRequest().getEntity(String.class);
@@ -150,6 +152,51 @@ public class ProductService {
         document.put("Title", request.getTitle());
         document.put("Price", request.getPrice());
         WriteResult result = productCollection.insert(document);
+
+        if (result.getError() != null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(result.getError()).build();
+        }
+
+        final ProductResponse productResponse = new ProductResponse();
+        productResponse.setProduct(request);
+
+        return Response.ok(request).build();
+    }
+
+    @PUT
+    @Path("/{id}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response updateProduct(@Context final HttpContext requestContext, @PathParam("id") final String id) {
+
+        final String contentType = requestContext.getRequest().getHeaderValue(HttpHeaders.CONTENT_TYPE);
+        final String originalRequest = requestContext.getRequest().getEntity(String.class);
+
+        Product request = null;
+        DB db;
+
+        try {
+            request = MarshallUtil.unmarshall(Product.class, originalRequest, contentType);
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        try {
+            db = establishConnection();
+        } catch (UnknownHostException e) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        final DBCollection productCollection = db.getCollection("products");
+        BasicDBObject document = new BasicDBObject();
+        document.put("brand", request.getBrand());
+        document.put("Title", request.getTitle());
+        document.put("Price", request.getPrice());
+
+        BasicDBObject query = new BasicDBObject();
+        query.put("_id", new ObjectId(id));
+
+        WriteResult result = productCollection.update(query, document);
 
         if (result.getError() != null) {
             return Response.status(Response.Status.BAD_REQUEST).entity(result.getError()).build();
