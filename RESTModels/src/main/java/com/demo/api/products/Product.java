@@ -9,9 +9,19 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "response")
 public class Product {
 
+    private String id;
     private String brand;
     private String title;
     private Double price;
+
+    @XmlElement(name = "id")
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     @XmlElement(name = "brand")
     public String getBrand() {
