@@ -4,6 +4,7 @@ import com.demo.api.common.MarshallUtil;
 import com.demo.api.products.Product;
 import com.demo.api.products.ProductResponse;
 import com.demo.api.products.ProductsResponse;
+import com.demo.api.service.db.DBKeys;
 import com.mongodb.*;
 import com.sun.jersey.api.core.HttpContext;
 import com.sun.jersey.spi.resource.Singleton;
@@ -39,17 +40,17 @@ public class ProductService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        final DBCollection productCollection = db.getCollection("products");
+        final DBCollection productCollection = db.getCollection(DBKeys.COLLECTION_PRODUCTS);
         final DBCursor cursor = productCollection.find();
         final List<Product> products = new ArrayList<Product>();
 
         while (cursor.hasNext()) {
             final DBObject current = cursor.next();
             final Product product = new Product();
-            product.setId(convertToString(current.get("_id")));
-            product.setBrand(convertToString(current.get("brand")));
-            product.setTitle(convertToString(current.get("Title")));
-            product.setPrice(convertToDouble(current.get("Price")));
+            product.setId(convertToString(current.get(DBKeys.ID)));
+            product.setBrand(convertToString(current.get(DBKeys.BRAND)));
+            product.setTitle(convertToString(current.get(DBKeys.TITLE)));
+            product.setPrice(convertToDouble(current.get(DBKeys.PRICE)));
             products.add(product);
         }
 
@@ -72,11 +73,11 @@ public class ProductService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        final DBCollection productCollection = db.getCollection("products");
+        final DBCollection productCollection = db.getCollection(DBKeys.COLLECTION_PRODUCTS);
 
         BasicDBObject query = new BasicDBObject();
         BasicDBObject allFields = new BasicDBObject();
-        query.put("_id", new ObjectId(id));
+        query.put(DBKeys.ID, new ObjectId(id));
 
         final DBCursor cursor = productCollection.find(query, allFields);
         Product product = null;
@@ -84,10 +85,10 @@ public class ProductService {
         if (cursor.hasNext()) {
             final DBObject current = cursor.next();
             product = new Product();
-            product.setId(convertToString(current.get("_id")));
-            product.setBrand(convertToString(current.get("brand")));
-            product.setTitle(convertToString(current.get("Title")));
-            product.setPrice(convertToDouble(current.get("Price")));
+            product.setId(convertToString(current.get(DBKeys.ID)));
+            product.setBrand(convertToString(current.get(DBKeys.BRAND)));
+            product.setTitle(convertToString(current.get(DBKeys.TITLE)));
+            product.setPrice(convertToDouble(current.get(DBKeys.PRICE)));
         }
 
         final ProductResponse productResponse = new ProductResponse();
@@ -104,7 +105,7 @@ public class ProductService {
         final String contentType = requestContext.getRequest().getHeaderValue(HttpHeaders.CONTENT_TYPE);
         final String originalRequest = requestContext.getRequest().getEntity(String.class);
 
-        Product request = null;
+        Product request;
         DB db;
 
         try {
@@ -119,11 +120,11 @@ public class ProductService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        final DBCollection productCollection = db.getCollection("products");
+        final DBCollection productCollection = db.getCollection(DBKeys.COLLECTION_PRODUCTS);
         BasicDBObject document = new BasicDBObject();
-        document.put("brand", request.getBrand());
-        document.put("Title", request.getTitle());
-        document.put("Price", request.getPrice());
+        document.put(DBKeys.BRAND, request.getBrand());
+        document.put(DBKeys.TITLE, request.getTitle());
+        document.put(DBKeys.PRICE, request.getPrice());
         WriteResult result = productCollection.insert(document);
 
         if (result.getError() != null) {
@@ -145,7 +146,7 @@ public class ProductService {
         final String contentType = requestContext.getRequest().getHeaderValue(HttpHeaders.CONTENT_TYPE);
         final String originalRequest = requestContext.getRequest().getEntity(String.class);
 
-        Product request = null;
+        Product request;
         DB db;
 
         try {
@@ -160,14 +161,14 @@ public class ProductService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        final DBCollection productCollection = db.getCollection("products");
+        final DBCollection productCollection = db.getCollection(DBKeys.COLLECTION_PRODUCTS);
         BasicDBObject document = new BasicDBObject();
-        document.put("brand", request.getBrand());
-        document.put("Title", request.getTitle());
-        document.put("Price", request.getPrice());
+        document.put(DBKeys.BRAND, request.getBrand());
+        document.put(DBKeys.TITLE, request.getTitle());
+        document.put(DBKeys.PRICE, request.getPrice());
 
         BasicDBObject query = new BasicDBObject();
-        query.put("_id", new ObjectId(id));
+        query.put(DBKeys.ID, new ObjectId(id));
 
         WriteResult result = productCollection.update(query, document);
 
@@ -194,10 +195,10 @@ public class ProductService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        final DBCollection productCollection = db.getCollection("products");
+        final DBCollection productCollection = db.getCollection(DBKeys.COLLECTION_PRODUCTS);
 
         BasicDBObject searchQuery = new BasicDBObject();
-        searchQuery.put("_id", new ObjectId(id));
+        searchQuery.put(DBKeys.ID, new ObjectId(id));
 
         WriteResult result = productCollection.remove(searchQuery);
 
@@ -212,10 +213,10 @@ public class ProductService {
 
         MongoClient mongoClient;
 
-        mongoClient = new MongoClient("localhost" , 27017 );
+        mongoClient = new MongoClient(DBKeys.SERVER_HOST , DBKeys.SERVER_PORT );
 
-        DB db = mongoClient.getDB("eGate");
-        db.authenticate("admin", "admin".toCharArray());
+        DB db = mongoClient.getDB(DBKeys.DB_EGATE);
+        db.authenticate(DBKeys.DB_EGATE_USER, DBKeys.DB_EGATE_PASS.toCharArray());
 
         return db;
     }
