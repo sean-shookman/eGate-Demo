@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * @author Sean Shookman
  */
-@XmlRootElement(name = "response")
+@XmlRootElement(name = "product")
 public class Product {
 
     private String id;
