@@ -28,6 +28,38 @@ import java.util.List;
 public class ProductService {
 
     @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response getAllProducts() {
+
+        DB db;
+
+        try {
+            db = establishConnection();
+        } catch (UnknownHostException e) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        final DBCollection productCollection = db.getCollection("products");
+        final DBCursor cursor = productCollection.find();
+        final List<Product> products = new ArrayList<Product>();
+
+        while (cursor.hasNext()) {
+            final DBObject current = cursor.next();
+            final Product product = new Product();
+            product.setId(convertToString(current.get("_id")));
+            product.setBrand(convertToString(current.get("brand")));
+            product.setTitle(convertToString(current.get("Title")));
+            product.setPrice(new Double(convertToString(current.get("Price"))));
+            products.add(product);
+        }
+
+        final ProductsResponse productsResponse = new ProductsResponse();
+        productsResponse.setProducts(products);
+
+        return Response.ok(productsResponse).build();
+    }
+
+    @GET
     @Path("/{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response getProductByID(@PathParam("id") final String id) {
@@ -52,75 +84,16 @@ public class ProductService {
         if (cursor.hasNext()) {
             final DBObject current = cursor.next();
             product = new Product();
-            product.setId(current.get("_id").toString());
-            product.setBrand(current.get("brand").toString());
-            product.setTitle(current.get("Title").toString());
-            product.setPrice(new Double(current.get("Price").toString()));
+            product.setId(convertToString(current.get("_id")));
+            product.setBrand(convertToString(current.get("brand")));
+            product.setTitle(convertToString(current.get("Title")));
+            product.setPrice(new Double(convertToString(current.get("Price"))));
         }
 
         final ProductResponse productResponse = new ProductResponse();
         productResponse.setProduct(product);
 
         return Response.ok(productResponse).build();
-    }
-
-    @DELETE
-    @Path("/{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response deleteProductByID(@PathParam("id") final String id) {
-
-        DB db;
-
-        try {
-            db = establishConnection();
-        } catch (UnknownHostException e) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-
-        final DBCollection productCollection = db.getCollection("products");
-
-        BasicDBObject searchQuery = new BasicDBObject();
-        searchQuery.put("_id", new ObjectId(id));
-
-        WriteResult result = productCollection.remove(searchQuery);
-
-        if (result.getError() != null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(result.getError()).build();
-        }
-
-        return Response.ok(id).build();
-    }
-
-    @GET
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response getAllProducts() {
-
-        DB db;
-
-        try {
-            db = establishConnection();
-        } catch (UnknownHostException e) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-
-        final DBCollection productCollection = db.getCollection("products");
-        final DBCursor cursor = productCollection.find();
-        final List<Product> products = new ArrayList<Product>();
-
-        while (cursor.hasNext()) {
-            final DBObject current = cursor.next();
-            final Product product = new Product();
-            product.setId(current.get("_id").toString());
-            product.setBrand(current.get("brand").toString());
-            product.setTitle(current.get("Title").toString());
-            product.setPrice(new Double(current.get("Price").toString()));
-            products.add(product);
-        }
-
-        final ProductsResponse productsResponse = new ProductsResponse();
-        productsResponse.setProducts(products);
-
-        return Response.ok(productsResponse).build();
     }
 
     @POST
@@ -208,6 +181,33 @@ public class ProductService {
         return Response.ok(request).build();
     }
 
+    @DELETE
+    @Path("/{id}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response deleteProductByID(@PathParam("id") final String id) {
+
+        DB db;
+
+        try {
+            db = establishConnection();
+        } catch (UnknownHostException e) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        final DBCollection productCollection = db.getCollection("products");
+
+        BasicDBObject searchQuery = new BasicDBObject();
+        searchQuery.put("_id", new ObjectId(id));
+
+        WriteResult result = productCollection.remove(searchQuery);
+
+        if (result.getError() != null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(result.getError()).build();
+        }
+
+        return Response.ok(id).build();
+    }
+
     private DB establishConnection() throws UnknownHostException {
 
         MongoClient mongoClient;
@@ -218,5 +218,14 @@ public class ProductService {
         db.authenticate("admin", "admin".toCharArray());
 
         return db;
+    }
+
+    private String convertToString(Object object) {
+
+        if (object != null) {
+            return object.toString();
+        }
+
+        return null;
     }
 }
