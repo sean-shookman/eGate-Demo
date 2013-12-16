@@ -33,7 +33,9 @@ public class ProductService {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response getAllProducts(@QueryParam(Parameters.SORT_FIELD) @DefaultValue(Parameters.SORT_FIELD_DEFAULT) final String sortField,
                                    @QueryParam(Parameters.SORT_ORDER) @DefaultValue(Parameters.SORT_ORDER_DEFAULT) final String sortOrder,
-                                   @QueryParam(Parameters.BRAND) @DefaultValue(Parameters.BRAND_DEFAULT) final String brandSearch) {
+                                   @QueryParam(Parameters.BRAND) @DefaultValue(Parameters.BRAND_DEFAULT) final String brandSearch,
+                                   @QueryParam(Parameters.TITLE) @DefaultValue(Parameters.TITLE_DEFAULT) final String titleSearch,
+                                   @QueryParam(Parameters.PRICE) @DefaultValue(Parameters.PRICE_DEFAULT) final String priceSearch) {
 
         DB db;
 
@@ -48,7 +50,7 @@ public class ProductService {
         final BasicDBObject sortObject = new BasicDBObject();
         sortObject.put(convertToSortField(sortField), convertToSortID(sortOrder));
 
-        BasicDBObject searchObject = buildSearchObject(brandSearch);
+        BasicDBObject searchObject = buildSearchObject(brandSearch, titleSearch, priceSearch);
 
         final DBCursor cursor = productCollection.find(searchObject).sort(sortObject);
         final List<Product> products = new ArrayList<Product>();
@@ -224,13 +226,18 @@ public class ProductService {
         return db;
     }
 
-    private BasicDBObject buildSearchObject(String brandSearch) {
+    private BasicDBObject buildSearchObject(String brandSearch, String titleSearch, String priceSearch) {
 
-        BasicDBObject searchObject = null;
+        BasicDBObject searchObject = new BasicDBObject();
 
         if (!brandSearch.isEmpty()) {
-            searchObject = new BasicDBObject();
             searchObject.put(DBKeys.BRAND, brandSearch);
+        }
+        if (!titleSearch.isEmpty()) {
+            searchObject.put(DBKeys.TITLE, titleSearch);
+        }
+        if (!priceSearch.isEmpty()) {
+            searchObject.put(DBKeys.PRICE, new Double(priceSearch));
         }
 
         return searchObject;
