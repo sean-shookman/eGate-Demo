@@ -49,7 +49,7 @@ public class ProductService {
             product.setId(convertToString(current.get("_id")));
             product.setBrand(convertToString(current.get("brand")));
             product.setTitle(convertToString(current.get("Title")));
-            product.setPrice(new Double(convertToString(current.get("Price"))));
+            product.setPrice(convertToDouble(current.get("Price")));
             products.add(product);
         }
 
@@ -87,7 +87,7 @@ public class ProductService {
             product.setId(convertToString(current.get("_id")));
             product.setBrand(convertToString(current.get("brand")));
             product.setTitle(convertToString(current.get("Title")));
-            product.setPrice(new Double(convertToString(current.get("Price"))));
+            product.setPrice(convertToDouble(current.get("Price")));
         }
 
         final ProductResponse productResponse = new ProductResponse();
@@ -224,6 +224,15 @@ public class ProductService {
 
         if (object != null) {
             return object.toString();
+        }
+
+        return null;
+    }
+
+    private Double convertToDouble(Object object) {
+
+        if (object != null) {
+            return new Double(object.toString());
         }
 
         return null;
