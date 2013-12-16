@@ -5,6 +5,7 @@ import com.demo.api.products.Product;
 import com.demo.api.products.ProductResponse;
 import com.demo.api.products.ProductsResponse;
 import com.demo.api.service.db.DBKeys;
+import com.demo.api.service.request.Parameters;
 import com.mongodb.*;
 import com.sun.jersey.api.core.HttpContext;
 import com.sun.jersey.spi.resource.Singleton;
@@ -30,7 +31,8 @@ public class ProductService {
 
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response getAllProducts() {
+    public Response getAllProducts(@QueryParam(Parameters.SORT_FIELD) @DefaultValue(Parameters.SORT_FIELD_DEFAULT) final String sortField,
+                                   @QueryParam(Parameters.SORT_ORDER) @DefaultValue(Parameters.SORT_ORDER_DEFAULT) final String sortOrder) {
 
         DB db;
 
@@ -41,7 +43,11 @@ public class ProductService {
         }
 
         final DBCollection productCollection = db.getCollection(DBKeys.COLLECTION_PRODUCTS);
-        final DBCursor cursor = productCollection.find();
+
+        final BasicDBObject sortObject = new BasicDBObject();
+        sortObject.put(convertToSortField(sortField), convertToSortID(sortOrder));
+
+        final DBCursor cursor = productCollection.find().sort(sortObject);
         final List<Product> products = new ArrayList<Product>();
 
         while (cursor.hasNext()) {
@@ -63,7 +69,7 @@ public class ProductService {
     @GET
     @Path("/{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response getProductByID(@PathParam("id") final String id) {
+    public Response getProductByID(@PathParam(Parameters.ID) final String id) {
 
         DB db;
 
@@ -231,5 +237,28 @@ public class ProductService {
         }
 
         return null;
+    }
+
+    private int convertToSortID(String sortOrder) {
+
+        if (sortOrder.equalsIgnoreCase("ascending")) {
+            return 1;
+        }
+        else if (sortOrder.equalsIgnoreCase("descending")) {
+            return -1;
+        }
+        else {
+            return 0;
+        }
+    }
+
+    private String convertToSortField(String sortField) {
+
+        sortField = sortField.toLowerCase();
+        if(sortField.equalsIgnoreCase("id")) {
+            sortField = "_" + sortField;
+        }
+
+        return sortField;
     }
 }

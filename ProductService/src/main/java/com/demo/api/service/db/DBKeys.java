@@ -15,7 +15,7 @@ public class DBKeys {
     public static final String COLLECTION_PRODUCTS = "products";
 
     public static final String BRAND = "brand";
-    public static final String TITLE = "Title";
-    public static final String PRICE = "Price";
+    public static final String TITLE = "title";
+    public static final String PRICE = "price";
     public static final String ID = "_id";
 }
