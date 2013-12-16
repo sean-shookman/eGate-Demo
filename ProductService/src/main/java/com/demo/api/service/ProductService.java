@@ -32,7 +32,8 @@ public class ProductService {
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response getAllProducts(@QueryParam(Parameters.SORT_FIELD) @DefaultValue(Parameters.SORT_FIELD_DEFAULT) final String sortField,
-                                   @QueryParam(Parameters.SORT_ORDER) @DefaultValue(Parameters.SORT_ORDER_DEFAULT) final String sortOrder) {
+                                   @QueryParam(Parameters.SORT_ORDER) @DefaultValue(Parameters.SORT_ORDER_DEFAULT) final String sortOrder,
+                                   @QueryParam(Parameters.BRAND) @DefaultValue(Parameters.BRAND_DEFAULT) final String brandSearch) {
 
         DB db;
 
@@ -47,7 +48,9 @@ public class ProductService {
         final BasicDBObject sortObject = new BasicDBObject();
         sortObject.put(convertToSortField(sortField), convertToSortID(sortOrder));
 
-        final DBCursor cursor = productCollection.find().sort(sortObject);
+        BasicDBObject searchObject = buildSearchObject(brandSearch);
+
+        final DBCursor cursor = productCollection.find(searchObject).sort(sortObject);
         final List<Product> products = new ArrayList<Product>();
 
         while (cursor.hasNext()) {
@@ -219,6 +222,18 @@ public class ProductService {
         db.authenticate(DBKeys.DB_EGATE_USER, DBKeys.DB_EGATE_PASS.toCharArray());
 
         return db;
+    }
+
+    private BasicDBObject buildSearchObject(String brandSearch) {
+
+        BasicDBObject searchObject = null;
+
+        if (!brandSearch.isEmpty()) {
+            searchObject = new BasicDBObject();
+            searchObject.put(DBKeys.BRAND, brandSearch);
+        }
+
+        return searchObject;
     }
 
     private String convertToString(Object object) {
