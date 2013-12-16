@@ -131,10 +131,7 @@ public class ProductService {
             return Response.status(Response.Status.BAD_REQUEST).entity(result.getError()).build();
         }
 
-        final ProductResponse productResponse = new ProductResponse();
-        productResponse.setProduct(request);
-
-        return Response.ok(productResponse).build();
+        return Response.ok().build();
     }
 
     @PUT
@@ -176,10 +173,7 @@ public class ProductService {
             return Response.status(Response.Status.BAD_REQUEST).entity(result.getError()).build();
         }
 
-        final ProductResponse productResponse = new ProductResponse();
-        productResponse.setProduct(request);
-
-        return Response.ok(productResponse).build();
+        return Response.ok().build();
     }
 
     @DELETE
@@ -206,7 +200,7 @@ public class ProductService {
             return Response.status(Response.Status.BAD_REQUEST).entity(result.getError()).build();
         }
 
-        return Response.ok(id).build();
+        return Response.ok().build();
     }
 
     private DB establishConnection() throws UnknownHostException {
