@@ -1,6 +1,7 @@
 package com.demo.api.service;
 
 import com.demo.api.products.Product;
+import com.demo.api.products.ProductsResponse;
 import com.mongodb.*;
 import com.sun.jersey.spi.resource.Singleton;
 
@@ -11,6 +12,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Sean Shookman
@@ -24,33 +27,44 @@ public class ProductService {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response getAllProducts() {
 
-        MongoClient mongoClient;
+        DB db;
 
         try {
 
-            mongoClient = new MongoClient("localhost" , 27017 );
+            db = establishConnection();
         } catch (UnknownHostException e) {
 
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        DB db = mongoClient.getDB("eGate");
-        boolean auth = db.authenticate("admin", "admin".toCharArray());
-
-        DBCollection products = db.getCollection("products");
-
-        DBCursor cursor = products.find();
-
-        Product product = null;
+        final DBCollection productCollection = db.getCollection("products");
+        final DBCursor cursor = productCollection.find();
+        final List<Product> products = new ArrayList<Product>();
 
         while (cursor.hasNext()) {
-            DBObject current = cursor.next();
-            product = new Product();
+            final DBObject current = cursor.next();
+            final Product product = new Product();
             product.setBrand(current.get("brand").toString());
             product.setTitle(current.get("Title").toString());
             product.setPrice(new Double(current.get("Price").toString()));
+            products.add(product);
         }
 
-        return Response.ok(product).build();
+        final ProductsResponse productsResponse = new ProductsResponse();
+        productsResponse.setProducts(products);
+
+        return Response.ok(productsResponse).build();
+    }
+
+    private DB establishConnection() throws UnknownHostException {
+
+        MongoClient mongoClient;
+
+        mongoClient = new MongoClient("localhost" , 27017 );
+
+        DB db = mongoClient.getDB("eGate");
+        db.authenticate("admin", "admin".toCharArray());
+
+        return db;
     }
 }
