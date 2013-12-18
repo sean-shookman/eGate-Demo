@@ -23,7 +23,7 @@
         </init-param>
         <init-param>
             <param-name>com.sun.jersey.config.property.packages</param-name>
-            <param-value>com.demo.api.service</param-value>
+            <param-value>com.demo.api.service, org.codehaus.jackson.jaxrs</param-value>
         </init-param>
         <init-param>
             <param-name>com.sun.jersey.config.feature.TracePerRequest</param-name>
