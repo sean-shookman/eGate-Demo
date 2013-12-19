@@ -42,7 +42,7 @@ public class ProductService {
         try {
             db = establishConnection();
         } catch (UnknownHostException e) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build();
         }
 
         final DBCollection productCollection = db.getCollection(DBKeys.COLLECTION_PRODUCTS);
@@ -81,7 +81,7 @@ public class ProductService {
         try {
             db = establishConnection();
         } catch (UnknownHostException e) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build();
         }
 
         final DBCollection productCollection = db.getCollection(DBKeys.COLLECTION_PRODUCTS);
@@ -122,13 +122,13 @@ public class ProductService {
         try {
             request = MarshallUtil.unmarshall(Product.class, originalRequest, contentType);
         } catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
 
         try {
             db = establishConnection();
         } catch (UnknownHostException e) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build();
         }
 
         final DBCollection productCollection = db.getCollection(DBKeys.COLLECTION_PRODUCTS);
@@ -160,13 +160,13 @@ public class ProductService {
         try {
             request = MarshallUtil.unmarshall(Product.class, originalRequest, contentType);
         } catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
 
         try {
             db = establishConnection();
         } catch (UnknownHostException e) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build();
         }
 
         final DBCollection productCollection = db.getCollection(DBKeys.COLLECTION_PRODUCTS);
@@ -197,7 +197,7 @@ public class ProductService {
         try {
             db = establishConnection();
         } catch (UnknownHostException e) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build();
         }
 
         final DBCollection productCollection = db.getCollection(DBKeys.COLLECTION_PRODUCTS);
