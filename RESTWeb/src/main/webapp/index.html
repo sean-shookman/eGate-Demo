@@ -1,7 +1,52 @@
-<html>
-    <body>
-
-        <h1>eGate Demo API</h1>
-
-    </body>
-</html>
+ <!doctype html>
+<html lang="en" data-framework="emberjs">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>Product Inventory App</title>
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		
+		<script type="text/x-handlebars" data-template-name="products">
+		<div class="space"/>
+		<section id="productsapp">
+			<header id="header">
+				<h1>Products</h1>
+				{{input type="text" id="brand" placeholder="Product Brand" value=newBrand}}
+				{{input type="text" id="title" placeholder="Product Title" value=newTitle}}
+				{{input type="text" id="price" placeholder="Product Price" value=newPrice}}
+				<!--input type="text" id="brand" placeholder="Product Brand"/></br>
+				<input type="text" id="title" placeholder="Product Title"/></br>
+				<input type="text" id="price" placeholder="Product Price"/></br></br-->
+			</header>
+			
+		</section>
+		
+		<button {{action "createProduct"}} type="button" class="create">Create Product</button>
+		
+		<section id="productsapp">
+			<header id="header">
+			{{#each itemController="product"}}
+				  <button class="update" type="button">{{id}}: {{brand}} - {{title}} - ${{price}}</button><button {{action "removeProduct"}} class="delete" type="button">X</button><br>
+			{{/each}}	  
+			</header>
+		</section>
+		</script>
+		
+		
+		<script src="js/libs/jquery-1.10.2.min.js"></script>
+  		<script src="js/libs/handlebars-1.0.0.js"></script>
+  		<script src="js/libs/ember.js"></script>
+  		<script src="js/libs/ember-data.js"></script>
+  		
+  		<script src="js/application.js"></script>
+  		<script src="js/router.js"></script>
+  		<script src="js/store.js"></script>
+  		
+  		<script src="js/models/product.js"></script>
+  		
+  		<script src="js/controllers/ProductController.js"></script>
+  		<script src="js/controllers/ProductsController.js"></script>
+	</body>
+</html>	

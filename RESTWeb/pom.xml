@@ -5,11 +5,11 @@
     <parent>
         <artifactId>HelloAPI</artifactId>
         <groupId>HelloAPI</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>RESTWeb</artifactId>
+    <artifactId>eGate</artifactId>
     <packaging>war</packaging>
 
     <build>
