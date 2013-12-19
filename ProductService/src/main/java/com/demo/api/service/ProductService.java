@@ -2,6 +2,7 @@ package com.demo.api.service;
 
 import com.demo.api.common.MarshallUtil;
 import com.demo.api.products.Product;
+import com.demo.api.products.ProductRequest;
 import com.demo.api.products.ProductResponse;
 import com.demo.api.products.ProductsResponse;
 import com.demo.api.service.db.DBKeys;
@@ -116,11 +117,11 @@ public class ProductService {
         final String contentType = requestContext.getRequest().getHeaderValue(HttpHeaders.CONTENT_TYPE);
         final String originalRequest = requestContext.getRequest().getEntity(String.class);
 
-        Product request;
+        ProductRequest request;
         DB db;
 
         try {
-            request = MarshallUtil.unmarshall(Product.class, originalRequest, contentType);
+            request = MarshallUtil.unmarshall(ProductRequest.class, originalRequest, contentType);
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
@@ -133,9 +134,9 @@ public class ProductService {
 
         final DBCollection productCollection = db.getCollection(DBKeys.COLLECTION_PRODUCTS);
         BasicDBObject document = new BasicDBObject();
-        document.put(DBKeys.BRAND, request.getBrand());
-        document.put(DBKeys.TITLE, request.getTitle());
-        document.put(DBKeys.PRICE, request.getPrice());
+        document.put(DBKeys.BRAND, request.getProduct().getBrand());
+        document.put(DBKeys.TITLE, request.getProduct().getTitle());
+        document.put(DBKeys.PRICE, request.getProduct().getPrice());
         WriteResult result = productCollection.insert(document);
 
         if (result.getError() != null) {
@@ -154,11 +155,11 @@ public class ProductService {
         final String contentType = requestContext.getRequest().getHeaderValue(HttpHeaders.CONTENT_TYPE);
         final String originalRequest = requestContext.getRequest().getEntity(String.class);
 
-        Product request;
+        ProductRequest request;
         DB db;
 
         try {
-            request = MarshallUtil.unmarshall(Product.class, originalRequest, contentType);
+            request = MarshallUtil.unmarshall(ProductRequest.class, originalRequest, contentType);
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
@@ -171,9 +172,9 @@ public class ProductService {
 
         final DBCollection productCollection = db.getCollection(DBKeys.COLLECTION_PRODUCTS);
         BasicDBObject document = new BasicDBObject();
-        document.put(DBKeys.BRAND, request.getBrand());
-        document.put(DBKeys.TITLE, request.getTitle());
-        document.put(DBKeys.PRICE, request.getPrice());
+        document.put(DBKeys.BRAND, request.getProduct().getBrand());
+        document.put(DBKeys.TITLE, request.getProduct().getTitle());
+        document.put(DBKeys.PRICE, request.getProduct().getPrice());
 
         BasicDBObject query = new BasicDBObject();
         query.put(DBKeys.ID, new ObjectId(id));
