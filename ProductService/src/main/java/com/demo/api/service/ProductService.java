@@ -30,7 +30,7 @@ import java.util.List;
 public class ProductService {
 
     @GET
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getAllProducts(@QueryParam(Parameters.SORT_FIELD) @DefaultValue(Parameters.SORT_FIELD_DEFAULT) final String sortField,
                                    @QueryParam(Parameters.SORT_ORDER) @DefaultValue(Parameters.SORT_ORDER_DEFAULT) final String sortOrder,
                                    @QueryParam(Parameters.BRAND) @DefaultValue(Parameters.BRAND_DEFAULT) final String brandSearch,
@@ -73,7 +73,7 @@ public class ProductService {
 
     @GET
     @Path("/{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getProductByID(@PathParam(Parameters.ID) final String id) {
 
         DB db;
@@ -109,8 +109,8 @@ public class ProductService {
     }
 
     @POST
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response createProduct(@Context final HttpContext requestContext) {
 
         final String contentType = requestContext.getRequest().getHeaderValue(HttpHeaders.CONTENT_TYPE);
@@ -147,8 +147,8 @@ public class ProductService {
 
     @PUT
     @Path("/{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response updateProduct(@Context final HttpContext requestContext, @PathParam("id") final String id) {
 
         final String contentType = requestContext.getRequest().getHeaderValue(HttpHeaders.CONTENT_TYPE);
@@ -189,7 +189,7 @@ public class ProductService {
 
     @DELETE
     @Path("/{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response deleteProductByID(@PathParam("id") final String id) {
 
         DB db;
