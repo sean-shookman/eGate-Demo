@@ -28,7 +28,7 @@
 		<section id="productsapp">
 			<header id="header">
 			{{#each itemController="product"}}
-				  <button class="update" type="button">{{id}}: {{brand}} - {{title}} - ${{price}}</button><button {{action "removeProduct"}} class="delete" type="button">X</button><br>
+				  <button class="update" type="button">{{brand}} - {{title}} - ${{price}}</button><button {{action "removeProduct"}} class="delete" type="button">X</button><br>
 			{{/each}}	  
 			</header>
 		</section>
